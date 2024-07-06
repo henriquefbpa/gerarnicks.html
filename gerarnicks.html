@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Nicks Aleatórios</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            text-align: center;
+            padding: 40px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #nickname-container {
+            margin-top: 20px;
+            opacity: 0; /* Inicialmente oculto */
+            transition: opacity 0.3s ease-in-out;
+        }
+        #nickname-container.show {
+            opacity: 1; /* Mostra quando adiciona a classe show */
+        }
+        #nickname {
+            font-size: 1.5em;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        #copy-button {
+            display: none; /* Inicialmente oculto */
+            background-color: #008CBA;
+            padding: 8px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        #copy-button:hover {
+            background-color: #005f6b;
+        }
+        .feedback-container {
+            display: none;
+            margin-top: 20px;
+        }
+        .feedback-container.show {
+            display: block;
+        }
+        .feedback-buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .feedback-buttons button:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gerador de Nicks Aleatórios</h1>
+    <p>Clique no botão abaixo para gerar um nick aleatório:</p>
+    <div id="nickname-container">
+        <span id="nickname"></span>
+        <button id="copy-button" onclick="copiarNickname()">Copiar</button>
+    </div>
+    <button onclick="gerarNickname()">🎲</button>
+
+    <div id="feedback-message" class="feedback-container">
+        <p>Você gostou de algum nick?</p>
+        <div class="feedback-buttons">
+            <button onclick="feedback(true)">👍 Sim</button>
+            <button onclick="feedback(false)">👎 Não</button>
+        </div>
+    </div>
+
+    <script>
+        // Lista de prefixos e sufixos para os nicks
+        const prefixos = ['Pro', 'Master', 'Xtreme', 'Ninja', 'Cyber', 'Epic', 'Ultra', 'Fantastic', 'Alpha', 'Sonic', 'Phantom', 'Dragon', 'Dark', 'Shadow', 'Silver', 'Golden', 'Speed', 'Inferno', 'Blaze', 'Neon'];
+        const sufixos = ['Gamer', 'Warrior', 'Player', 'Sniper', 'Legend', 'Champion', 'Hunter', 'Beast', 'Ghost', 'Phantom', 'Rogue', 'Titan', 'Knight', 'Pirate', 'Assassin', 'Samurai', 'Spartan', 'Mercenary', 'Gladiator', 'Cyborg'];
+        const corrida = ['Race', 'Speed', 'Turbo', 'Nitro', 'Gear', 'Drift', 'Drive', 'Track', 'Lane', 'Pace', 'Velocity', 'Boost', 'Wheel', 'Finish', 'Racer', 'Chase', 'Lane', 'Shift', 'Dash', 'Adrenaline'];
+
+        let nickCount = 0;
+        let likedAnyNickname = false;
+
+        function gerarNickname() {
+            const prefixo = prefixos[Math.floor(Math.random() * prefixos.length)];
+            const sufixo = sufixos[Math.floor(Math.random() * sufixos.length)];
+            const palavraCorrida = corrida[Math.floor(Math.random() * corrida.length)];
+            const numeroAleatorio = Math.floor(Math.random() * 1000);
+            let nickname = `${prefixo}${sufixo}${palavraCorrida}${numeroAleatorio}`;
+
+            // Chance de adicionar Xx ou xX nas bordas com 10% de chance
+            if (Math.random() < 0.1) {
+                if (Math.random() < 0.5) {
+                    nickname = `Xx${nickname}xX`;
+                } else {
+                    nickname = `xX${nickname}Xx`;
+                }
+            }
+
+            const nicknameElement = document.getElementById('nickname');
+            nicknameElement.textContent = nickname;
+
+            // Mostra o container do nickname com transição
+            const nicknameContainer = document.getElementById('nickname-container');
+            nicknameContainer.classList.remove('show');
+            setTimeout(() => {
+                nicknameContainer.classList.add('show');
+            }, 50); // Pequeno delay para garantir a animação
+
+            // Mostra o botão de copiar
+            document.getElementById('copy-button').style.display = 'inline-block';
+
+            // Contador de nicks gerados
+            nickCount++;
+            if (nickCount >= 10 && !likedAnyNickname) {
+                mostrarFeedback();
+            }
+        }
+
+        function copiarNickname() {
+            const nickname = document.getElementById('nickname').textContent;
+            navigator.clipboard.writeText(nickname)
+                .then(() => {
+                    alert(`Nickname '${nickname}' copiado para a área de transferência.`);
+                })
+                .catch(err => {
+                    console.error('Erro ao copiar nickname: ', err);
+                    alert('Erro ao copiar nickname. Por favor, copie manualmente.');
+                });
+        }
+
+        function mostrarFeedback() {
+            const feedbackContainer = document.querySelector('.feedback-container');
+            feedbackContainer.classList.add('show');
+        }
+
+        function feedback(liked) {
+            likedAnyNickname = liked;
+            const feedbackContainer = document.querySelector('.feedback-container');
+            feedbackContainer.classList.remove('show');
+            feedbackContainer.style.display = 'none'; // Oculta o container de feedback
+            if (liked) {
+                alert('Obrigado pelo seu feedback positivo!');
+            } else {
+                alert('Vamos tentar melhorar! Obrigado pelo feedback.');
+            }
+        }
+    </script>
+</body>
+</html>
